@@ -1,0 +1,15 @@
+
+export PROJECT=$GOOGLE_CLOUD_PROJECT
+gcloud compute instances create gcelab --machine-type n1-standard-2 --zone us-central1-f --tags=http-server --create-disk=auto-delete=yes,boot=yes,device-name=gcela,image=projects/debian-cloud/global/images/debian-10-buster-v20210916,mode=rw,size=10,type=projects/$PROJECT/zones/us-central1-f/diskTypes/pd-balanced 
+gcloud compute ssh gcelab --zone=us-central1-f
+
+#in ssh
+sudo su -
+apt-get update
+apt-get install nginx -y
+ps auwx | grep nginx
+exit
+exit
+# verify external ip of gcelab showing nginx
+
+gcloud compute instances create gcelab2 --machine-type n1-standard-2 --zone us-central1-f 
