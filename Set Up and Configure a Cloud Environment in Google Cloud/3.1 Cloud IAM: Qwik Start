@@ -1,0 +1,19 @@
+export BUCKET_NAME=$(gcloud info --format='value(config.project)')
+gsutil mb gs://$BUCKET_NAME/
+wget --output-document sample.txt https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Ada_Lovelace_portrait.jpg/800px-Ada_Lovelace_portrait.jpg
+gsutil cp sample.txt gs://$BUCKET_NAME
+
+# remove and add access using iam manually
+# try below code and if not working do it through console manually
+
+
+export PROJECT_ID=$(gcloud info --format='value(config.project)')
+export LASTUSER=$(gcloud projects get-iam-policy $BUCKET_NAME --flatten="bindings[].members" --format='table(bindings.members)' --filter="bindings.members:user:student*" |& tail -1) 
+echo $LASTUSER
+
+# copy second email and Replace SECOND_USER_HERE with that
+
+gcloud projects remove-iam-policy-binding $PROJECT_ID --role='roles/viewer' --member='user:SECOND_USER_HERE'
+
+gcloud projects add-iam-policy-binding $PROJECT_ID --role='roles/storage.admin' --member='user:SECOND_USER_HERE'
+
